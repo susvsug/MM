@@ -82,12 +82,12 @@ async def help_command(ctx):
     )
     embed.add_field(
         name="`.اوت`", 
-        value="يُسخدم كـ (Reply) على رسالة المخالف لإعطائه Timeout مباشرة لمدة ساعة كاملة وكتابة Log.", 
+        value="يُستخدم كـ (Reply) على رسالة المخالف لإعطائه Timeout مباشرة لمدة ساعة كاملة وكتابة Log.", 
         inline=False
     )
     embed.add_field(
         name="`.تكت`", 
-        value="يُستخدم داخل التذكرة لتسجيل إنجازها وإغلاقها بواسطة الإداري في روم السجلات قبل حذفها.", 
+        value="تسجيل إنجاز التذكرة وإرسال السجل إلى روم السجلات (دون حذف الروم).", 
         inline=False
     )
     avatar_url = ctx.author.avatar.url if ctx.author.avatar else None
@@ -211,7 +211,7 @@ async def out(ctx):
         await log_channel.send(embed=log_embed)
 
 
-# --- 4. أمر .تكت ---
+# --- 4. أمر .تكت (تم إلغاء حذف الروم تلقائياً) ---
 @bot.command(name="تكت")
 @has_allowed_role()
 async def ticket_close(ctx):
@@ -220,18 +220,15 @@ async def ticket_close(ctx):
     log_embed = discord.Embed(color=discord.Color.from_rgb(255, 255, 255))
     log_embed.add_field(name="الإداري المسؤول", value=ctx.author.mention, inline=False)
     log_embed.add_field(name="اسم التذكرة", value=f"`# {channel_name}`", inline=False)
-    log_embed.add_field(name="الحالة", value="✅ تم إنجاز التذكرة وإغلاقها بنجاح بواسطة الإداري.", inline=False)
+    log_embed.add_field(name="الحالة", value="✅ تم تسجيل إنجاز التذكرة وإرسال السجل بنجاح (الروم محفوظ ولم يتم حذفه).", inline=False)
     log_embed.set_footer(text=f"التاريخ: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}")
 
     log_channel = bot.get_channel(LOG_CHANNEL_ID)
     if log_channel:
         await log_channel.send(embed=log_embed)
 
-    try:
-        await ctx.channel.delete(reason=f"تم إغلاق التذكرة بواسطة {ctx.author.name}")
-    except discord.Forbidden:
-        if log_channel:
-            await log_channel.send("⚠️ تنبيه: لم يتمكن البوت من حذف روم التذكرة تلقائيًا، يرجى حذفه يدويًا.")
+    # يرسل تأكيد للإداري داخل الروم نفسه بأنه تم الحفظ
+    await ctx.send("✅ **تم تسجيل إنجاز التذكرة وإرسال التقرير لغرفة السجلات بنجاح!**")
 
 
 # قراءة التوكن بأمان من متغيرات البيئة الخاصة بـ Railway
