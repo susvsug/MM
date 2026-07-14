@@ -1,19 +1,3 @@
-import sys
-import subprocess
-
-# --- حيلة التثبيت الذاتي لمكتبة audioop لتجاوز مشكلة Python 3.13 في Railway ---
-try:
-    import audioop
-except ModuleNotFoundError:
-    print("⚠️ لم يتم العثور على audioop، جاري تثبيت البديل المتوافق مع بايثون 3.13 تلقائياً...")
-    try:
-        # تثبيت المكتبة البديلة صامتاً في الخلفية
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "audioop-lts", "--quiet"])
-        print("✅ تم تثبيت audioop-lts بنجاح!")
-    except Exception as e:
-        print(f"❌ فشل تثبيت المكتبة البديلة تلقائياً: {e}")
-
-# --- الآن يبدأ كود البوت الخاص بك بأمان كامل ---
 import discord
 from discord.ext import commands
 import datetime
@@ -33,7 +17,6 @@ ALLOWED_ROLE_ID = 1497438097128951899
 LOG_CHANNEL_ID = 1509196870289981530
 
 # تحديد مسار ملف حفظ البيانات (متوافق مع الـ Volumes في Railway)
-# يبحث أولاً عن مجلد اسمه data، وإذا لم يجده يحفظه في المجلد الرئيسي
 DATA_DIR = "/app/data" if os.path.exists("/app") else "."
 DATA_FILE = os.path.join(DATA_DIR, "warnings.json")
 
@@ -76,7 +59,7 @@ def has_allowed_role():
 
 @bot.event
 async def on_ready():
-    print(f"تم تشغيل البوت بنجاح بواسطة: {bot.user}")
+    print(f"🟢 تم تشغيل البوت بنجاح بواسطة: {bot.user}")
 
 
 # --- 1. أمر المساعدة ---
@@ -99,7 +82,7 @@ async def help_command(ctx):
     )
     embed.add_field(
         name="`.اوت`", 
-        value="يُستخدم كـ (Reply) على رسالة المخالف لإعطائه Timeout مباشرة لمدة ساعة كاملة وكتابة Log.", 
+        value="يُسخدم كـ (Reply) على رسالة المخالف لإعطائه Timeout مباشرة لمدة ساعة كاملة وكتابة Log.", 
         inline=False
     )
     embed.add_field(
