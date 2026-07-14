@@ -1,3 +1,19 @@
+import sys
+import subprocess
+
+# --- حيلة التثبيت الذاتي لمكتبة audioop لتجاوز مشكلة Python 3.13 في Railway ---
+try:
+    import audioop
+except ModuleNotFoundError:
+    print("⚠️ لم يتم العثور على audioop، جاري تثبيت البديل المتوافق مع بايثون 3.13 تلقائياً...")
+    try:
+        # تثبيت المكتبة البديلة صامتاً في الخلفية
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "audioop-lts", "--quiet"])
+        print("✅ تم تثبيت audioop-lts بنجاح!")
+    except Exception as e:
+        print(f"❌ فشل تثبيت المكتبة البديلة تلقائياً: {e}")
+
+# --- الآن يبدأ كود البوت الخاص بك بأمان كامل ---
 import discord
 from discord.ext import commands
 import datetime
